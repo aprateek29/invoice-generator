@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+            @frame header_frame {   
+                -pdf-frame-content: header_content;
+                left: 40pt; width: 512pt; top: 50pt; height: 40pt;
+            }
+            @frame content_frame {          
+                -pdf-frame-border:1;
+                left: 40pt; width: 512pt; top: 100pt; height: 532pt;
+            }
+            @frame footer_frame {           
+                -pdf-frame-content: footer_content;
+                left: 50pt; width: 512pt; top: 772pt; height: 80pt;
+            }
+        }
+
+        table.product-table, table.product-table>tr>th, .product-table>tr>td { 
+            border: 1px solid black;
+        }
+
+        table.product-table {
+            width: 100%;
+        }
+        
+        .header-table {
+            height: 60px;
+            border: 1px solid black;
+            font-weight: bold;
+            font-size: 1.2em;
+            line-height: 10px;
+        }
+        .row-product {
+            height: 40px;
+            text-align: right;
+            font-size: 1.1em;
+        }
+        .pad {
+            padding-right: 5px;
+            padding-left: 5px;
+            padding-top: 1px;
+        }
+    </style>
+    </head>
+    
+    <body>
+        <div id="header_content">
+            <h1 style="background-color: #371323; color: white; text-align: center; font-size: 2em; padding-top: 15pt;">Invoice</h1>
+        </div>
+        <br>
+    
+        <div id="footer_content">(c) - page <pdf:pagenumber>
+            of <pdf:pagecount>
+        </div>
+
+
+        <div id="content_frame">
+    
+        <table style="padding-left: 10px;">
+                <tr>
+                    <td style="text-align: left; font-size: 1.5em;">Address: {{address}}</td>
+                    <td style="text-align: left; font-size: 1.5em;">Phone: {{phone}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-size: 1.5em;">{{city}}, {{state}}</td>
+                    <td style="text-align: left; font-size: 1.5em;">{{email}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-size: 1.5em;">{{zipcode}}</td>
+                    <td style="text-align: left; font-size: 1.5em;">{{website}}</td>
+                </tr>
+        </table>
+
+        <br>    
+        <br>    
+        <br>    
+    
+
+            <table class="product-table">
+                <tr class="header-table">
+                    <th>S. No.</th>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Quantity</th>
+                    <th>Product Total</th>
+                </tr>
+                {% for product in product_list %}
+                <tr class="row-product">
+                    <td class="pad" style="width: 50px;">{{forloop.counter}}</td>
+                    <td class="pad">{{product.name}}</td>
+                    <td class="pad">${{product.price|floatformat:2}}</td>
+                    <td class="pad">{{product.quantity}}</td>
+                    <td class="pad">${{product.get_total|floatformat:2}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        
+        <p style="padding-right: 50px; font-size: 1.5em; text-align: right;"><strong>Invoice Total: ${{invoice_total|floatformat:2}}</strong></p>
+    </body>
+    </html>
